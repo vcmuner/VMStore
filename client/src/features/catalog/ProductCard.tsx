@@ -1,13 +1,14 @@
 import { Avatar, Button, Card, CardActions, CardContent, CardHeader, CardMedia, Typography } from "@mui/material";
 import { Product } from "../../app/models/product";
+import { Link } from "react-router-dom";
 
 //To ensure type safety even when using "any", we specify in an interface what types the properties will be. If we forget to pass the properties specified here when using the component, typescript will show an error
 //These properties will be required to pass down to our component
 interface Props {
 	product: Product;
-//if we had addProduct here:
-//addProduct: () => void;
-//no params passed to addProduct and it does not return anything
+	//if we had addProduct here:
+	//addProduct: () => void;
+	//no params passed to addProduct and it does not return anything
 }
 
 export default function ProductCard(props: Props) { //we could do this: export default function Catalog({products}: Props) to use only the properties we are interested in and avoid writing props when calling them "props.products" or "props.addProduct"
@@ -39,7 +40,9 @@ export default function ProductCard(props: Props) { //we could do this: export d
 			</CardContent>
 			<CardActions>
 				<Button size="small">Add to cart</Button>
-				<Button size="small">View</Button>
+				{/*Link component from react router dom*/}
+				{/*Back tics allow us to concatenate text and js code*/}
+				<Button component= {Link} to={`/catalog/${props.product.id}`} size="small">View</Button>
 			</CardActions>
 		</Card>
 	)

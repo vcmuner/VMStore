@@ -9,7 +9,7 @@ interface Props {
 export default function ProductList({ products }: Props) {
 	return (
 		//spacing is the amount of space between each item in the grid -- 1=8px
-		<Grid container spacing={4} sx={{my: 4}}>
+		<Grid container spacing={4} sx={{ my: 4 }}>
 			{products.map(product => (
 				//All items inside a list must have an ID
 				<Grid item xs={3} key={product.id}>

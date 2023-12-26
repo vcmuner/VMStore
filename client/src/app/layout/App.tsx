@@ -1,8 +1,9 @@
+
 import { Container, CssBaseline, ThemeProvider, createTheme } from '@mui/material';
-import Catalog from '../../features/catalog/Catalog';
+import { useState } from 'react';
+import { Outlet } from 'react-router-dom';
 import Header from './Header';
 import './styles.css';
-import { useState } from 'react';
 
 function App() {
 	const [darkMode, setDarkMode] = useState(false);
@@ -25,7 +26,8 @@ function App() {
 			<Header darkMode={darkMode} handleThemeChange={handleThemeChange} />
 			{/*Putting Catalog in a React Container so it is not at the edge of the page*/}
 			<Container>
-				<Catalog />
+				{/*<Catalog /> Since we are now using a router, we swap for Outlet (from react router dom), which will be replaced with the component we decided to load as the root url (HomePage in this case)*/}
+				<Outlet /> 
 			</Container>
 		</ThemeProvider>
 	);
