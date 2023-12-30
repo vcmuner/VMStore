@@ -5,9 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers
 {
-	[ApiController]
-	[Route("api/[controller]")]
-	public class ProductsController : ControllerBase
+	public class ProductsController : BaseApiController
 	{
 		//Using dependency injection to get our store context inside here so that we've got access to the products table in our database
 		private readonly StoreContext _context;
@@ -15,7 +13,7 @@ namespace API.Controllers
 		{
 			_context = context;
 		}
-		
+
 		//Creating endpoints
 		[HttpGet]
 		//Returns a list of products
@@ -27,11 +25,12 @@ namespace API.Controllers
 		}
 
 		[HttpGet("{id}")] //api/products/{id}
-		//Returns an individual product
-		public async Task <ActionResult<Product>> GetProduct(int id)
+						  //Returns an individual product
+		public async Task<ActionResult<Product>> GetProduct(int id)
 		{
-			//can also return directly this way
-			return await _context.Products.FindAsync(id);
+			var product = await _context.Products.FindAsync(id);
+			if(product == null) return NotFound();
+			return product;
 		}
 	}
 }

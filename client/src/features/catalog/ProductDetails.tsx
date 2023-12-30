@@ -1,8 +1,10 @@
 import { Divider, Grid, Table, TableBody, TableCell, TableContainer, TableRow, Typography } from "@mui/material";
-import axios from "axios";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Product } from "../../app/models/product";
+import agent from "../../app/api/agent";
+import NotFound from "../../app/errors/NotFound";
+import LoadingComponent from "../../app/layout/LoadingComponent";
 
 export default function ProductDetails() {
 	const { id } = useParams<{ id: string }>();
@@ -13,14 +15,17 @@ export default function ProductDetails() {
 
 	//useEffect will run when the component mounts and ALSO when the dependency we specified changes (in this case, when the 'id' changes)
 	useEffect(() => {
-		axios.get(`http://localhost:5000/api/Products/${id}`)
-			.then(response => setProduct(response.data))
-			.catch(error => console.log(error))
+		//Replacing 'axios.get(`http://localhost:5000/api/Products/${id}`)' with agent
+		//the code after the && will be executed after we have something in the 'id' variable
+		//If not, we get the following error: Argument of type 'string | undefined' is not assignable to parameter of type 'string'
+		id && agent.Catalog.details(parseInt(id))
+			.then(response => setProduct(response)) //We do not need response.data (already managed in the agent)
+			.catch(error => console.log(error)) //error gives us te full Axios response for the error (error.response in the agent)
 			.finally(() => setLoading(false)); //Turn off the loading once we receive the data
 	}, [id])
 
-	if (loading) return <h3>Loading...</h3>
-	if (!product) return <h3>Product not found</h3>
+	if (loading) return <LoadingComponent message = 'Loading Product...'/>
+	if (!product) return <NotFound />
 
 	return (
 		<Grid container spacing={6}>
@@ -46,7 +51,7 @@ export default function ProductDetails() {
 								<TableCell>Type</TableCell>
 								<TableCell>{product.type}</TableCell>
 							</TableRow>
-	
+
 							<TableRow>
 								<TableCell>Quantity in stock</TableCell>
 								<TableCell>{product.quantityInStock}</TableCell>

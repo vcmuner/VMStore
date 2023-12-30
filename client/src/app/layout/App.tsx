@@ -4,6 +4,8 @@ import { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import Header from './Header';
 import './styles.css';
+import { ToastContainer } from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
 	const [darkMode, setDarkMode] = useState(false);
@@ -22,6 +24,7 @@ function App() {
 	}
 	return (
 		<ThemeProvider theme={theme}>
+			<ToastContainer position='bottom-right' hideProgressBar theme='colored' limit={4}/>
 			<CssBaseline /> {/*Removes padding and margins added by the browser making the header reach the edges of the page*/}
 			<Header darkMode={darkMode} handleThemeChange={handleThemeChange} />
 			{/*Putting Catalog in a React Container so it is not at the edge of the page*/}
