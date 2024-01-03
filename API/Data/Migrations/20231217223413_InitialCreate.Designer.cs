@@ -9,45 +9,45 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace API.Data.Migrations
 {
-    [DbContext(typeof(StoreContext))]
-    [Migration("20231217223413_InitialCreate")]
-    partial class InitialCreate
-    {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
-        {
+	[DbContext(typeof(StoreContext))]
+	[Migration("20231217223413_InitialCreate")]
+	partial class InitialCreate
+	{
+		/// <inheritdoc />
+		protected override void BuildTargetModel(ModelBuilder modelBuilder)
+		{
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "8.0.0");
+			modelBuilder.HasAnnotation("ProductVersion", "8.0.0");
 
-            modelBuilder.Entity("API.Entities.Product", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+			modelBuilder.Entity("API.Entities.Product", b =>
+				{
+					b.Property<int>("Id")
+						.ValueGeneratedOnAdd()
+						.HasColumnType("INTEGER");
 
-                    b.Property<string>("Description")
-                        .HasColumnType("TEXT");
+					b.Property<string>("Description")
+						.HasColumnType("TEXT");
 
-                    b.Property<string>("Name")
-                        .HasColumnType("TEXT");
+					b.Property<string>("Name")
+						.HasColumnType("TEXT");
 
-                    b.Property<string>("PictureUrl")
-                        .HasColumnType("TEXT");
+					b.Property<string>("PictureUrl")
+						.HasColumnType("TEXT");
 
-                    b.Property<long>("Price")
-                        .HasColumnType("INTEGER");
+					b.Property<long>("Price")
+						.HasColumnType("INTEGER");
 
-                    b.Property<string>("QuantityInStock")
-                        .HasColumnType("TEXT");
+					b.Property<string>("QuantityInStock")
+						.HasColumnType("TEXT");
 
-                    b.Property<string>("Type")
-                        .HasColumnType("TEXT");
+					b.Property<string>("Type")
+						.HasColumnType("TEXT");
 
-                    b.HasKey("Id");
+					b.HasKey("Id");
 
-                    b.ToTable("Products");
-                });
+					b.ToTable("Products");
+				});
 #pragma warning restore 612, 618
-        }
-    }
+		}
+	}
 }

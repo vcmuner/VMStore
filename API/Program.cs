@@ -28,7 +28,8 @@ if (app.Environment.IsDevelopment())
 //Middleware
 app.UseCors(opt =>
 {
-	opt.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:3000");
+	//AllowCredentials is needed so we can pass the cookie from our API server and the client (if we do not add this it will not work because server and client are on different domains)
+	opt.AllowAnyHeader().AllowAnyMethod().AllowCredentials().WithOrigins("http://localhost:3000");
 });
 app.UseHttpsRedirection();
 
