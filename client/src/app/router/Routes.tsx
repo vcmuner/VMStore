@@ -7,6 +7,8 @@ import AboutPage from "../../features/about/AboutPage";
 import ContactPage from "../../features/contact/ContactPage";
 import ServerError from "../errors/ServerError";
 import NotFound from "../errors/NotFound";
+import BasketPage from "../../features/basket/BasketPage";
+import CheckoutPage from "../../features/checkout/CheckoutPage";
 
 //Single page app (no extra htmls)
 //Instead of loading the App component in main.tsx, we load the RouterProvider
@@ -20,6 +22,8 @@ export const router = createBrowserRouter([
 			{ path: '/', element: <HomePage /> },
 			{ path: 'catalog', element: <Catalog /> },
 			{ path: 'catalog/:id', element: <ProductDetails /> },
+			{ path: 'basket', element: <BasketPage /> },
+			{ path: 'checkout', element: <CheckoutPage /> },
 			{ path: 'about', element: <AboutPage /> },
 			{ path: 'contact', element: <ContactPage /> },
 			{ path: 'server-error', element: <ServerError /> },

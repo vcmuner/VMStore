@@ -1,12 +1,13 @@
 import axios, { AxiosError, AxiosResponse } from "axios";
 import { toast } from "react-toastify";
-import { router } from "../router/Router";
+import { router } from "../router/Routes";
 
 //The way to deal with asyncghronous code in JS is yo use Promises
 //When promise is resolved we return 'resolve', and we wait for 1000 miliseconds for it to resolve
 const wait = () => new Promise(resolve => setTimeout(resolve, 500));
 
 axios.defaults.baseURL = 'http://localhost:5000/api/';
+axios.defaults.withCredentials = true; //Similar to what was done in Program.cs on the API to allow to pass the cookie (browser can now receive and set the cookie)
 
 const responseBody = (response: AxiosResponse) => response.data;
 //The function above is the same as this one below:
@@ -77,9 +78,18 @@ const TestErrors = {
 	get500Error: () => requests.get('buggy/server-error'),
 	getValidationError: () => requests.get('buggy/validation-error'),
 }
+
+const Basket = {
+	get: () => requests.get('basket'),
+	//Param names should match the param names of the POST method in the basket controller 
+	addItem: (productId: number, quantity = 1) => requests.post(`basket?productId=${productId}&quantity=${quantity}`, Object), //We pass an empty object because it requires another param for the body
+	removeItem: (productId: number, quantity = 1) => requests.delete(`basket?productId=${productId}&quantity=${quantity}`),
+}
+
 const agent = {
 	Catalog,
-	TestErrors
+	TestErrors,
+	Basket,
 }
 
 export default agent;
