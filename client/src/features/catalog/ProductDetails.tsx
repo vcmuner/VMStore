@@ -95,11 +95,12 @@ export default function ProductDetails() {
 						</TableBody>
 					</Table>
 				</TableContainer>
+				<Divider />
 				<Grid container spacing={2}>
 					<Grid item xs={6}>
 						<TextField onChange={handleInputChange} variant="outlined" type="number" label="In Cart:" fullWidth value={quantity} />
 					</Grid>
-					<Grid xs={6}>
+					<Grid item xs={6}>
 						<LoadingButton disabled={item?.quantity === quantity || !item && quantity === 0} loading={updatingCart} onClick={handleUpdateCart} sx={{ height: '55px' }} color='primary' size='large' variant='contained' fullWidth >
 							{item ? "Update Quantity" : "Add to Cart"}
 						</LoadingButton>
