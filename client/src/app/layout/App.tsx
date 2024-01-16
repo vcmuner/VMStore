@@ -2,30 +2,33 @@
 import { Container, CssBaseline, ThemeProvider, createTheme } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
-import Header from './Header';
-import './styles.css';
 import { ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
-import { useStoreContext } from '../context/StoreContext';
-import { getCookie } from '../utils/utils';
+import { setBasket } from '../../features/basket/basketSlice';
 import agent from '../api/agent';
+import { useAppDispatch } from '../store/configureStore';
+import { getCookie } from '../utils/utils';
+import Header from './Header';
 import LoadingComponent from './LoadingComponent';
+import './styles.css';
 
 function App() {
-	const { setBasket } = useStoreContext();
+	//const { setBasket } = useStoreContext(); ---- Replacing with Redux
+	const dispatch = useAppDispatch();
 	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
 		const buyerId = getCookie('buyerId');
 		if (buyerId) {
 			agent.Basket.get()
-				.then(basket => setBasket(basket))
+				//.then(basket => setBasket(basket)) ---- Replacing with Redux
+				.then(basket => dispatch(setBasket(basket)))
 				.catch(error => console.log(error))
 				.finally(() => setLoading(false))
 		} else {
 			setLoading(false); //If we do not have anything in the basket we do not need to load anything (otherwise will never turn off loading when initializing the app with an empty basket/no buyerId)
 		}
-	}, [setBasket])
+	}, [dispatch]) //When replacing with Redux, dependency is no longer setBasket, it is dispatch
 
 	const [darkMode, setDarkMode] = useState(false);
 	const paletteType = darkMode ? 'dark' : 'light';

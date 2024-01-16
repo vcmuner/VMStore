@@ -38,13 +38,13 @@ namespace API.Controllers
 			if (basket == null) basket = CreateBasket();
 			//Get product
 			var product = await _context.Products.FindAsync(productId);
-			if (product == null) return NotFound();
+			if (product == null) return BadRequest(new ProblemDetails { Title = string.Format("Product with ID {0} not found", productId) });
 			//Add item
 			basket.AddItem(product, quantity);
 			//Save changes
 			var result = await _context.SaveChangesAsync() > 0; //Returns the number of saved changes in our DB. If it is NOT greater than 0, we have NOT saved anything in the DB
 			if (result) return CreatedAtRoute("GetBasket", MapBasketToDto(basket)); //The "GetBasket" route will add a Location header with the path and the resource created
-			return BadRequest(new ProblemDetails { Title = "Problem saving item to basket" });
+			return BadRequest(new ProblemDetails { Title = string.Format("Problem saving item with ID {0} to cart", productId) });
 		}
 
 		[HttpDelete]
@@ -58,7 +58,7 @@ namespace API.Controllers
 			//Save changes
 			var result = await _context.SaveChangesAsync() > 0; //Returns the number of saved changes in our DB. If it is NOT greater than 0, we have NOT saved anything in the DB
 			if (result) return Ok();
-			return BadRequest(new ProblemDetails { Title = "Problem removing item to basket" });
+			return BadRequest(new ProblemDetails { Title = string.Format("Problem removing item with ID {0} from cart", productId) });
 		}
 
 		private async Task<Basket> RetrieveBasket()

@@ -4,21 +4,24 @@ import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { StoreProvider } from './app/context/StoreContext.tsx';
-import './app/layout/styles.css';
+import { Provider } from 'react-redux';
 import { RouterProvider } from 'react-router-dom';
+import './app/layout/styles.css';
 import { router } from './app/router/Routes.tsx';
+import { store } from './app/store/configureStore.ts';
+
+//const store = configureStore(); ---> not needed with Redux Toolkit, we use the store from our configureStore method in the Provider tag below
+
+const root = ReactDOM.createRoot(
+	document.getElementById('root') as HTMLElement
+);
 
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
-	//Instead of loading the App component in main.tsx, we load the RouterProvider
-	//Wrapping the RouterProvider (which mounts the APP) inside the StoreProvider
-	//To get access to the contents and the state inside the store provider anywhere in our application
-	//By using the store context hook (useStoreContext()) created in the StoreContext class
+root.render(
+	//Removing context (StoreProvider) which is our React context, since we will be using 100% Redux for state management
 	<React.StrictMode>
-		{/*<App /> */}
-		<StoreProvider>
+		<Provider store={store}>
 			<RouterProvider router={router} />
-		</StoreProvider>
+		</Provider>
 	</React.StrictMode>,
 )
