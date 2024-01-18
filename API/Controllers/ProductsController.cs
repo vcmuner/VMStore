@@ -1,5 +1,8 @@
+using System.Text.Json;
 using API.Data;
 using API.Entities;
+using API.Extensions;
+using API.RequestHelpers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,19 +21,38 @@ namespace API.Controllers
 		[HttpGet]
 		//Returns a list of products
 		//async + Task (wrapper around ActionResult)
-		public async Task<ActionResult<List<Product>>> GetProducts()
+		public async Task<ActionResult<PagedList<Product>>> GetProducts([FromQuery] ProductParams productParams)
+		//[FromQuery] tells the GET method to look for params in the query string instead of looking for an object in the request body (we are passing an object to the function)
 		{
-			var products = await _context.Products.ToListAsync();
-			return Ok(products); //returns 200 and the list of products
+			var query = _context.Products
+			.Sort(productParams.OrderBy) //With Extension methods (in this case, the ones in ProductExtensions file) we can call out custom Sort using query.Sort(param)
+			.Search(productParams.SearchTerm)
+			.Filter(productParams.Types)
+			.AsQueryable(); //Still not executing anything against the database
+
+			//return await query.ToListAsync(); //Executes the query against the database
+			var products = await PagedList<Product>.ToPagedList(query, productParams.PageNumber, productParams.PageSize);
+
+			//We return the product params as headers serializing as a json our metadata
+			Response.AddPaginationHeader(products.MetaData);
+
+			return products;
 		}
 
+		//Returns an individual product
 		[HttpGet("{id}")] //api/products/{id}
-						  //Returns an individual product
 		public async Task<ActionResult<Product>> GetProduct(int id)
 		{
 			var product = await _context.Products.FindAsync(id);
-			if(product == null) return NotFound();
+			if (product == null) return NotFound();
 			return product;
+		}
+
+		[HttpGet("filters")]
+		public async Task<ActionResult<Product>> GetFilters(int id)
+		{
+			var types = await _context.Products.Select(p => p.Type).Distinct().ToListAsync();
+			return Ok(new { types });
 		}
 	}
 }
