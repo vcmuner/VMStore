@@ -49,7 +49,7 @@ namespace API.Controllers
 		}
 
 		[HttpGet("filters")]
-		public async Task<ActionResult<Product>> GetFilters(int id)
+		public async Task<ActionResult<Product>> GetFilters()
 		{
 			var types = await _context.Products.Select(p => p.Type).Distinct().ToListAsync();
 			return Ok(new { types });
