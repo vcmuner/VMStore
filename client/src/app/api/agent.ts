@@ -1,10 +1,11 @@
 import axios, { AxiosError, AxiosResponse } from "axios";
 import { toast } from "react-toastify";
 import { router } from "../router/Routes";
+import { PaginatedResponse } from '../models/pagination';
 
 //The way to deal with asyncghronous code in JS is yo use Promises
 //When promise is resolved we return 'resolve', and we wait for 1000 miliseconds for it to resolve
-const wait = () => new Promise(resolve => setTimeout(resolve, 500));
+const sleep = () => new Promise(resolve => setTimeout(resolve, 500))
 
 axios.defaults.baseURL = 'http://localhost:5000/api/';
 axios.defaults.withCredentials = true; //Similar to what was done in Program.cs on the API to allow to pass the cookie (browser can now receive and set the cookie)
@@ -16,7 +17,14 @@ const responseBody = (response: AxiosResponse) => response.data;
 //}
 
 axios.interceptors.response.use(async response => {
-	await wait();
+	await sleep();
+	//"pagination has to be in lowercase even if the header name in the browser is not. Axios only works with lowercase properties inside our response"
+	const pagination = response.headers['pagination'];
+	if (pagination) {
+		//Overriding what is inside response.data
+		response.data = new PaginatedResponse(response.data, JSON.parse(pagination));
+		return response;
+	}
 	return response
 }, (error: AxiosError) => {
 	const { data, status } = error.response as AxiosResponse;
@@ -56,7 +64,7 @@ axios.interceptors.response.use(async response => {
 })
 
 const requests = {
-	get: (url: string) => axios.get(url).then(responseBody),
+	get: (url: string, params?: URLSearchParams) => axios.get(url, { params }).then(responseBody),
 	//body: {} means body is of type Object
 	post: (url: string, body: object) => axios.post(url, body).then(responseBody),
 	put: (url: string, body: object) => axios.put(url, body).then(responseBody),
@@ -66,9 +74,10 @@ const requests = {
 //Receives no parameters and returns the list of products
 const Catalog = {
 	//Receives no parameters and returns the list of products
-	list: () => requests.get('products'),
+	list: (params: URLSearchParams) => requests.get('products', params),
 	//Receives the 'id' which is of type 'number' and returns the matching product
-	details: (id: number) => requests.get(`products/${id}`)
+	details: (id: number) => requests.get(`products/${id}`),
+	fetchFilters: () => requests.get('products/filters')
 }
 
 const TestErrors = {
